@@ -66,16 +66,12 @@ test:
 lint:
 	$(BUILDX_CMD) bake lint
 
-.PHONY: validate-vendor
-validate-vendor:
-	$(BUILDX_CMD) bake vendor-validate
-
 .PHONY: fmt
 fmt:
-	gofmt -s -l `ls **/*.go | grep -v vendor`
+	gofmt -s -l `ls **/*.go`
 
 .PHONY: validate
-validate: lint validate-vendor fmt
+validate: lint fmt
 
 BUILDIMG:=docker-credential-secretservice-$(VERSION)
 .PHONY: deb
@@ -88,14 +84,6 @@ deb:
 		.
 	docker run --rm --net=none $(BUILDIMG) tar cf - /release | tar xf -
 	docker rmi $(BUILDIMG)
-
-.PHONY: vendor
-vendor:
-	$(eval $@_TMP_OUT := $(shell mktemp -d -t docker-output.XXXXXXXXXX))
-	$(BUILDX_CMD) bake --set "*.output=type=local,dest=$($@_TMP_OUT)" vendor
-	rm -rf ./vendor
-	cp -R "$($@_TMP_OUT)"/* .
-	rm -rf "$($@_TMP_OUT)"
 
 .PHONY: print-%
 print-%: ; @echo $($*)

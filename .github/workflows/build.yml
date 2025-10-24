@@ -25,7 +25,6 @@ jobs:
       matrix:
         target:
           - lint
-          - validate-vendor
     steps:
       -
         name: Checkout

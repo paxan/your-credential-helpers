@@ -20,39 +20,8 @@ FROM --platform=$BUILDPLATFORM golang:${GO_VERSION}-${DEBIAN_VERSION} AS gobase
 COPY --from=xx / /
 ARG DEBIAN_FRONTEND
 RUN apt-get update && apt-get install -y --no-install-recommends clang dpkg-dev file git lld llvm make pkg-config rsync
-ENV GOFLAGS="-mod=vendor"
 ENV CGO_ENABLED="1"
 WORKDIR /src
-
-FROM gobase AS vendored
-RUN --mount=target=/context \
-    --mount=target=.,type=tmpfs  \
-    --mount=target=/go/pkg/mod,type=cache <<EOT
-  set -e
-  rsync -a /context/. .
-  go mod tidy
-  go mod vendor
-  mkdir /out
-  cp -r go.mod go.sum vendor /out
-EOT
-
-FROM scratch AS vendor-update
-COPY --from=vendored /out /
-
-FROM vendored AS vendor-validate
-RUN --mount=target=/context \
-    --mount=target=.,type=tmpfs <<EOT
-  set -e
-  rsync -a /context/. .
-  git add -A
-  rm -rf vendor
-  cp -rf /out/* .
-  if [ -n "$(git status --porcelain -- go.mod go.sum vendor)" ]; then
-    echo >&2 'ERROR: Vendor result differs. Please vendor your package with "make vendor"'
-    git status --porcelain -- go.mod go.sum vendor
-    exit 1
-  fi
-EOT
 
 FROM golangci/golangci-lint:${GOLANGCI_LINT_VERSION} AS golangci-lint
 FROM gobase AS lint
