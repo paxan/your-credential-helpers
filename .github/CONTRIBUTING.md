@@ -23,7 +23,7 @@ A great way to contribute to the project is to send a detailed report when you
 encounter an issue. We always appreciate a well-written, thorough bug report,
 and will thank you for it!
 
-Check that [the issue database](https://github.com/docker/docker-credential-helpers/issues)
+Check that [the issue database](https://github.com/paxan/your-credential-helpers/issues)
 doesn't already include that problem or suggestion before submitting an issue.
 If you find a match, you can use the "subscribe" button to get notified on
 updates. Do *not* leave random "+1" or "I have this too" comments, as they

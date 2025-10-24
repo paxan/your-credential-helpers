@@ -8,7 +8,7 @@ ARG OSXCROSS_VERSION=11.3-r8-debian
 ARG GOLANGCI_LINT_VERSION=v2.5
 ARG DEBIAN_FRONTEND=noninteractive
 
-ARG PACKAGE=github.com/docker/docker-credential-helpers
+ARG PACKAGE=github.com/paxan/your-credential-helpers
 
 # xx is a helper for cross-compilation
 FROM --platform=$BUILDPLATFORM tonistiigi/xx:${XX_VERSION} AS xx

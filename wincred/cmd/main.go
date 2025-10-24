@@ -3,8 +3,8 @@
 package main
 
 import (
-	"github.com/docker/docker-credential-helpers/credentials"
-	"github.com/docker/docker-credential-helpers/wincred"
+	"github.com/paxan/your-credential-helpers/credentials"
+	"github.com/paxan/your-credential-helpers/wincred"
 )
 
 func main() {

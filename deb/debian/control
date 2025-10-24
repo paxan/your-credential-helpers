@@ -4,8 +4,8 @@ Priority: optional
 Maintainer: Docker <support@docker.com>
 Homepage: https://dockerproject.org
 Standards-Version: 3.9.6
-Vcs-Browser: https://github.com/docker/docker-credential-helpers
-Vcs-Git: git://github.com/docker/docker-credential-helpers.git
+Vcs-Browser: https://github.com/paxan/your-credential-helpers
+Vcs-Git: git://github.com/paxan/your-credential-helpers.git
 Build-Depends: debhelper
   , dh-make
   , libsecret-1-dev

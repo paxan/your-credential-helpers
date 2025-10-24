@@ -1,4 +1,4 @@
-module github.com/docker/docker-credential-helpers
+module github.com/paxan/your-credential-helpers
 
 go 1.21
 

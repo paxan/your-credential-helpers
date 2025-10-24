@@ -11,10 +11,10 @@ docker-credential-helpers ($VERSION) $DISTRO-$SUITE; urgency=low
  -- $maintainer  $(date --rfc-2822)
 EOF
 
-mkdir -p src/github.com/docker/docker-credential-helpers
-ln -s /build/credentials /build/src/github.com/docker/docker-credential-helpers/credentials
-ln -s /build/secretservice /build/src/github.com/docker/docker-credential-helpers/secretservice
-ln -s /build/pass /build/src/github.com/docker/docker-credential-helpers/pass
+mkdir -p src/github.com/paxan/your-credential-helpers
+ln -s /build/credentials /build/src/github.com/paxan/your-credential-helpers/credentials
+ln -s /build/secretservice /build/src/github.com/paxan/your-credential-helpers/secretservice
+ln -s /build/pass /build/src/github.com/paxan/your-credential-helpers/pass
 
 dpkg-buildpackage -us -uc
 

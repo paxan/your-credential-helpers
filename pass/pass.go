@@ -17,7 +17,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/docker/docker-credential-helpers/credentials"
+	"github.com/paxan/your-credential-helpers/credentials"
 )
 
 // PASS_FOLDER contains the directory where credentials are stored

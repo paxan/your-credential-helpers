@@ -1,8 +1,8 @@
-[![GitHub release](https://img.shields.io/github/release/docker/docker-credential-helpers.svg?style=flat-square)](https://github.com/docker/docker-credential-helpers/releases/latest)
-[![PkgGoDev](https://img.shields.io/badge/go.dev-docs-007d9c?style=flat-square&logo=go&logoColor=white)](https://pkg.go.dev/github.com/docker/docker-credential-helpers)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/docker/docker-credential-helpers/build.yml?label=build&logo=github&style=flat-square)](https://github.com/docker/docker-credential-helpers/actions?query=workflow%3Abuild)
+[![GitHub release](https://img.shields.io/github/release/docker/docker-credential-helpers.svg?style=flat-square)](https://github.com/paxan/your-credential-helpers/releases/latest)
+[![PkgGoDev](https://img.shields.io/badge/go.dev-docs-007d9c?style=flat-square&logo=go&logoColor=white)](https://pkg.go.dev/github.com/paxan/your-credential-helpers)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/docker/docker-credential-helpers/build.yml?label=build&logo=github&style=flat-square)](https://github.com/paxan/your-credential-helpers/actions?query=workflow%3Abuild)
 [![Codecov](https://img.shields.io/codecov/c/github/docker/docker-credential-helpers?logo=codecov&style=flat-square)](https://codecov.io/gh/docker/docker-credential-helpers)
-[![Go Report Card](https://goreportcard.com/badge/github.com/docker/docker-credential-helpers?style=flat-square)](https://goreportcard.com/report/github.com/docker/docker-credential-helpers)
+[![Go Report Card](https://goreportcard.com/badge/github.com/paxan/your-credential-helpers?style=flat-square)](https://goreportcard.com/report/github.com/paxan/your-credential-helpers)
 
 ## Introduction
 
@@ -10,7 +10,7 @@ docker-credential-helpers is a suite of programs to use native stores to keep Do
 
 ## Installation
 
-Go to the [Releases](https://github.com/docker/docker-credential-helpers/releases) page and download the binary that works better for you. Put that binary in your `$PATH`, so Docker can find it.
+Go to the [Releases](https://github.com/paxan/your-credential-helpers/releases) page and download the binary that works better for you. Put that binary in your `$PATH`, so Docker can find it.
 
 ## Building
 
@@ -24,10 +24,10 @@ $ docker run --privileged --rm tonistiigi/binfmt --install all
 $ docker buildx create --use
 
 # build credential helpers from remote repository and output to ./bin/build
-$ docker buildx bake "https://github.com/docker/docker-credential-helpers.git"
+$ docker buildx bake "https://github.com/paxan/your-credential-helpers.git"
 
 # or from local source
-$ git clone https://github.com/docker/docker-credential-helpers.git
+$ git clone https://github.com/paxan/your-credential-helpers.git
 $ cd docker-credential-helpers
 $ docker buildx bake
 ```
@@ -37,7 +37,7 @@ Or if the toolchain is already installed on your machine:
 1. Download the source.
 
 ```shell
-$ git clone https://github.com/docker/docker-credential-helpers.git
+$ git clone https://github.com/paxan/your-credential-helpers.git
 $ cd docker-credential-helpers
 ```
 
@@ -67,7 +67,7 @@ Set the `credsStore` option in your `~/.docker/config.json` file with the suffix
 
 ### With other command line applications
 
-The sub-package [client](https://godoc.org/github.com/docker/docker-credential-helpers/client) includes
+The sub-package [client](https://godoc.org/github.com/paxan/your-credential-helpers/client) includes
 functions to call external programs from your own command line applications.
 
 There are three things you need to know if you need to interact with a helper:
@@ -76,7 +76,7 @@ There are three things you need to know if you need to interact with a helper:
 2. The server address to identify the credentials, for instance `https://example.com`.
 3. The username and secret to store, when you want to store credentials.
 
-You can see examples of each function in the [client](https://godoc.org/github.com/docker/docker-credential-helpers/client) documentation.
+You can see examples of each function in the [client](https://godoc.org/github.com/paxan/your-credential-helpers/client) documentation.
 
 ### Available programs
 

@@ -3,8 +3,8 @@
 package main
 
 import (
-	"github.com/docker/docker-credential-helpers/credentials"
-	"github.com/docker/docker-credential-helpers/osxkeychain"
+	"github.com/paxan/your-credential-helpers/credentials"
+	"github.com/paxan/your-credential-helpers/osxkeychain"
 )
 
 func main() {

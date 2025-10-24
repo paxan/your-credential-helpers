@@ -1,8 +1,8 @@
-PACKAGE ?= github.com/docker/docker-credential-helpers
+PACKAGE ?= github.com/paxan/your-credential-helpers
 VERSION ?= $(shell ./hack/git-meta version)
 REVISION ?= $(shell ./hack/git-meta revision)
 
-GO_PKG = github.com/docker/docker-credential-helpers
+GO_PKG = github.com/paxan/your-credential-helpers
 GO_LDFLAGS = -s -w -X ${GO_PKG}/credentials.Version=${VERSION} -X ${GO_PKG}/credentials.Revision=${REVISION} -X ${GO_PKG}/credentials.Package=${PACKAGE}
 
 BUILDX_CMD ?= docker buildx

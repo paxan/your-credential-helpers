@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/docker/docker-credential-helpers/credentials"
+	"github.com/paxan/your-credential-helpers/credentials"
 )
 
 func TestSecretServiceHelper(t *testing.T) {

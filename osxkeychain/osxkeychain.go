@@ -16,9 +16,9 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/docker/docker-credential-helpers/credentials"
-	"github.com/docker/docker-credential-helpers/registryurl"
 	"github.com/keybase/go-keychain"
+	"github.com/paxan/your-credential-helpers/credentials"
+	"github.com/paxan/your-credential-helpers/registryurl"
 )
 
 // https://opensource.apple.com/source/Security/Security-55471/sec/Security/SecBase.h.auto.html
@@ -55,7 +55,7 @@ func (h Osxkeychain) Add(creds *credentials.Credentials) error {
 	// credentials with this attribute set. This way, credentials stored with
 	// newer versions can be retrieved by older versions.
 	//
-	// [1]: https://github.com/docker/docker-credential-helpers/blob/v0.8.2/osxkeychain/osxkeychain.c#L66
+	// [1]: https://github.com/paxan/your-credential-helpers/blob/v0.8.2/osxkeychain/osxkeychain.c#L66
 	item.SetAuthenticationType("dflt")
 	if err := splitServer(creds.ServerURL, item); err != nil {
 		return err
