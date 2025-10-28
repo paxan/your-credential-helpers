@@ -9,6 +9,7 @@ ARG GOLANGCI_LINT_VERSION=v2.5
 ARG DEBIAN_FRONTEND=noninteractive
 
 ARG PACKAGE=github.com/paxan/your-credential-helpers
+ARG HELPER_PREFIX
 
 # xx is a helper for cross-compilation
 FROM --platform=$BUILDPLATFORM tonistiigi/xx:${XX_VERSION} AS xx
@@ -70,6 +71,8 @@ RUN --mount=target=. \
 
 FROM base AS build
 ARG PACKAGE
+ARG HELPER_PREFIX
+ARG HELPER_LABEL
 RUN --mount=type=bind,target=. \
     --mount=type=cache,target=/root/.cache \
     --mount=type=cache,target=/go/pkg/mod \
@@ -77,24 +80,32 @@ RUN --mount=type=bind,target=. \
     --mount=type=bind,source=/tmp/.version,target=/tmp/.version,from=version \
     --mount=type=bind,source=/tmp/.revision,target=/tmp/.revision,from=version <<EOT
   set -ex
+  if [ -z "$HELPER_PREFIX" ]; then
+    echo "Error: HELPER_PREFIX must be set"
+    exit 1
+  fi
+  if [ -z "$HELPER_LABEL" ]; then
+    echo "Error: HELPER_LABEL must be set"
+    exit 1
+  fi
   export MACOSX_VERSION_MIN=$(make print-MACOSX_DEPLOYMENT_TARGET)
   xx-go --wrap
   case "$(xx-info os)" in
     linux)
-      make build-pass build-secretservice PACKAGE=$PACKAGE VERSION=$(cat /tmp/.version) REVISION=$(cat /tmp/.revision) DESTDIR=/out
-      xx-verify /out/docker-credential-pass
-      xx-verify /out/docker-credential-secretservice
+      make build-pass build-secretservice PACKAGE=$PACKAGE VERSION=$(cat /tmp/.version) REVISION=$(cat /tmp/.revision) HELPER_PREFIX=$HELPER_PREFIX HELPER_LABEL="$HELPER_LABEL" DESTDIR=/out
+      xx-verify /out/${HELPER_PREFIX}-pass
+      xx-verify /out/${HELPER_PREFIX}-secretservice
       ;;
     darwin)
       go install std
-      make build-osxkeychain build-pass PACKAGE=$PACKAGE VERSION=$(cat /tmp/.version) REVISION=$(cat /tmp/.revision) DESTDIR=/out
-      xx-verify /out/docker-credential-osxkeychain
-      xx-verify /out/docker-credential-pass
+      make build-osxkeychain build-pass PACKAGE=$PACKAGE VERSION=$(cat /tmp/.version) REVISION=$(cat /tmp/.revision) HELPER_PREFIX=$HELPER_PREFIX HELPER_LABEL="$HELPER_LABEL" DESTDIR=/out
+      xx-verify /out/${HELPER_PREFIX}-osxkeychain
+      xx-verify /out/${HELPER_PREFIX}-pass
       ;;
     windows)
-      make build-wincred PACKAGE=$PACKAGE VERSION=$(cat /tmp/.version) REVISION=$(cat /tmp/.revision) DESTDIR=/out
-      mv /out/docker-credential-wincred /out/docker-credential-wincred.exe
-      xx-verify /out/docker-credential-wincred.exe
+      make build-wincred PACKAGE=$PACKAGE VERSION=$(cat /tmp/.version) REVISION=$(cat /tmp/.revision) HELPER_PREFIX=$HELPER_PREFIX HELPER_LABEL="$HELPER_LABEL" DESTDIR=/out
+      mv /out/${HELPER_PREFIX}-wincred /out/${HELPER_PREFIX}-wincred.exe
+      xx-verify /out/${HELPER_PREFIX}-wincred.exe
       ;;
   esac
 EOT

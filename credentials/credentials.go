@@ -47,15 +47,10 @@ func (c *Credentials) isValid() (bool, error) {
 	return true, nil
 }
 
-// CredsLabel holds the way Docker credentials should be labeled as such in credentials stores that allow labelling.
-// That label allows to filter out non-Docker credentials too at lookup/search in macOS keychain,
-// Windows credentials manager and Linux libsecret. Default value is "Docker Credentials"
-var CredsLabel = "Docker Credentials"
-
-// SetCredsLabel is a simple setter for CredsLabel
-func SetCredsLabel(label string) {
-	CredsLabel = label
-}
+// CredsLabel holds the way credentials should be labeled as such in credentials stores that allow labelling.
+// That label allows to filter out unrelated credentials too at lookup/search in macOS keychain,
+// Windows credentials manager and Linux libsecret.
+var CredsLabel = ""
 
 // Serve initializes the credentials-helper and parses the action argument.
 // This function is designed to be called from a command line interface.

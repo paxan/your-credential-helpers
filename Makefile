@@ -8,6 +8,8 @@ GO_LDFLAGS = -s -w -X ${GO_PKG}/credentials.Version=${VERSION} -X ${GO_PKG}/cred
 BUILDX_CMD ?= docker buildx
 DESTDIR ?= ./bin/build
 COVERAGEDIR ?= ./bin/coverage
+HELPER_PREFIX ?=
+HELPER_LABEL ?=
 
 # 10.11 is the minimum supported version for osxkeychain
 export MACOSX_DEPLOYMENT_TARGET = 10.11
@@ -37,9 +39,18 @@ all: cross
 clean:
 	rm -rf bin
 
+.PHONY: check-prefix
+check-prefix:
+ifeq ($(HELPER_PREFIX),)
+	$(error HELPER_PREFIX must be set. Example: make build-pass HELPER_PREFIX=myapp-credential)
+endif
+ifeq ($(HELPER_LABEL),)
+	$(error HELPER_LABEL must be set. Example: make build-pass HELPER_LABEL="My App Credentials")
+endif
+
 .PHONY: build-%
-build-%: # build, can be one of build-osxkeychain build-pass build-secretservice build-wincred
-	go build -trimpath -ldflags="$(GO_LDFLAGS) -X ${GO_PKG}/credentials.Name=docker-credential-$*" -o "$(DESTDIR)/docker-credential-$*" ./$*/cmd/
+build-%: check-prefix # build, can be one of build-osxkeychain build-pass build-secretservice build-wincred
+	go build -trimpath -ldflags='$(GO_LDFLAGS) -X ${GO_PKG}/credentials.Name=$(HELPER_PREFIX)-$* -X "${GO_PKG}/credentials.CredsLabel=$(HELPER_LABEL)" -X ${GO_PKG}/pass.PassFolder=$(HELPER_PREFIX)-helpers' -o "$(DESTDIR)/$(HELPER_PREFIX)-$*" ./$*/cmd/
 
 # aliases for build-* targets
 .PHONY: osxkeychain secretservice pass wincred
@@ -49,8 +60,8 @@ pass: build-pass
 wincred: build-wincred
 
 .PHONY: cross
-cross: # cross build all supported credential helpers
-	$(BUILDX_CMD) bake binaries
+cross: check-prefix # cross build all supported credential helpers
+	$(BUILDX_CMD) bake --set "*.args.HELPER_PREFIX=$(HELPER_PREFIX)" --set "*.args.HELPER_LABEL=$(HELPER_LABEL)" binaries
 
 .PHONY: release
 release: # create release

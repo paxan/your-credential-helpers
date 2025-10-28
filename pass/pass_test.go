@@ -12,6 +12,12 @@ import (
 )
 
 func TestPassHelper(t *testing.T) {
+	t.Cleanup(func() {
+		PassFolder = ""
+	})
+
+	PassFolder = t.Name()
+
 	creds := &credentials.Credentials{
 		ServerURL: "https://foobar.example.com:2376/v1",
 		Username:  "nothing",
@@ -54,6 +60,12 @@ func TestPassHelperCheckInit(t *testing.T) {
 }
 
 func TestPassHelperList(t *testing.T) {
+	t.Cleanup(func() {
+		PassFolder = ""
+	})
+
+	PassFolder = t.Name()
+
 	creds := []*credentials.Credentials{
 		{
 			ServerURL: "https://foobar.example.com:2376/v1",
@@ -142,7 +154,10 @@ func TestPassHelperWithEmptyServer(t *testing.T) {
 		for _, cred := range creds {
 			_ = helper.Delete(cred.ServerURL)
 		}
+		PassFolder = ""
 	})
+
+	PassFolder = t.Name()
 
 	for _, cred := range creds {
 		if cred.Username != "" {
@@ -152,7 +167,7 @@ func TestPassHelperWithEmptyServer(t *testing.T) {
 		} else {
 			// No credentials; create an empty directory for this server.
 			serverURL := encodeServerURL(cred.ServerURL)
-			p := path.Join(getPassDir(), PASS_FOLDER, serverURL)
+			p := path.Join(getPassDir(), PassFolder, serverURL)
 			if err := os.Mkdir(p, 0o755); err != nil {
 				t.Error(err)
 			}
@@ -188,6 +203,12 @@ func TestPassHelperWithEmptyServer(t *testing.T) {
 }
 
 func TestMissingCred(t *testing.T) {
+	t.Cleanup(func() {
+		PassFolder = ""
+	})
+
+	PassFolder = t.Name()
+
 	helper := Pass{}
 	if _, _, err := helper.Get("garbage"); !credentials.IsErrCredentialsNotFound(err) {
 		t.Errorf("expected credentials not found, actual: %v", err)

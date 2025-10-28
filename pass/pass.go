@@ -1,5 +1,5 @@
 // Package pass implements a `pass` based credential helper. Passwords are stored
-// as arguments to pass of the form: "$PASS_FOLDER/base64-url(serverURL)/username".
+// as arguments to pass of the form: "<PassFolder>/base64-url(serverURL)/username".
 // We base64-url encode the serverURL, because under the hood pass uses files and
 // folders, so /s will get translated into additional folders.
 package pass
@@ -20,8 +20,15 @@ import (
 	"github.com/paxan/your-credential-helpers/credentials"
 )
 
-// PASS_FOLDER contains the directory where credentials are stored
-const PASS_FOLDER = "docker-credential-helpers" //nolint:revive
+// PassFolder contains the directory where credentials are stored. It is set via
+// linker flags during build, see -X flag usages in "go build" invocations in
+// Makefile.
+var PassFolder = ""
+
+// ErrPassFolderNotSet indicates that HELPER_PREFIX and/or HELPER_LABEL were not
+// configured correctly at build time, or that tests were not initialized
+// correctly.
+var ErrPassFolderNotSet = errors.New("PassFolder variable is not set")
 
 // Pass handles secrets using pass as a store.
 type Pass struct{}
@@ -87,8 +94,12 @@ func (p Pass) Add(creds *credentials.Credentials) error {
 		return errors.New("missing credentials")
 	}
 
+	if PassFolder == "" {
+		return ErrPassFolderNotSet
+	}
+
 	encoded := encodeServerURL(creds.ServerURL)
-	_, err := p.runPass(creds.Secret, "insert", "-f", "-m", path.Join(PASS_FOLDER, encoded, creds.Username))
+	_, err := p.runPass(creds.Secret, "insert", "-f", "-m", path.Join(PassFolder, encoded, creds.Username))
 	return err
 }
 
@@ -98,8 +109,12 @@ func (p Pass) Delete(serverURL string) error {
 		return errors.New("missing server url")
 	}
 
+	if PassFolder == "" {
+		return ErrPassFolderNotSet
+	}
+
 	encoded := encodeServerURL(serverURL)
-	_, err := p.runPass("", "rm", "-rf", path.Join(PASS_FOLDER, encoded))
+	_, err := p.runPass("", "rm", "-rf", path.Join(PassFolder, encoded))
 	return err
 }
 
@@ -116,7 +131,10 @@ func getPassDir() string {
 // and parse this, let's just look at the directory structure instead.
 func listPassDir(args ...string) ([]os.FileInfo, error) {
 	passDir := getPassDir()
-	p := path.Join(append([]string{passDir, PASS_FOLDER}, args...)...)
+	if PassFolder == "" {
+		return nil, ErrPassFolderNotSet
+	}
+	p := path.Join(append([]string{passDir, PassFolder}, args...)...)
 	entries, err := os.ReadDir(p)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -151,8 +169,12 @@ func (p Pass) Get(serverURL string) (string, string, error) {
 		return "", "", credentials.NewErrCredentialsNotFound()
 	}
 
+	if PassFolder == "" {
+		return "", "", ErrPassFolderNotSet
+	}
+
 	actual := strings.TrimSuffix(usernames[0].Name(), ".gpg")
-	secret, err := p.runPass("", "show", path.Join(PASS_FOLDER, encoded, actual))
+	secret, err := p.runPass("", "show", path.Join(PassFolder, encoded, actual))
 	return actual, secret, err
 }
 

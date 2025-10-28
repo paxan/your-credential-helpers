@@ -11,6 +11,12 @@ set -e
 : "${PFX=}"
 : "${PFXPASSWORD=}"
 
+# Validate HELPER_PREFIX is set
+if [ -z "$HELPER_PREFIX" ]; then
+	echo "Error: HELPER_PREFIX must be set"
+	exit 1
+fi
+
 if [ -n "$CACHE_FROM" ]; then
 	for cfrom in $CACHE_FROM; do
 		cacheFlags+=(--set "*.cache-from=$cfrom")
@@ -54,6 +60,6 @@ fi
 # checksums
 (
   cd ${DESTDIR}
-  sha256sum -b docker-credential-* > ./checksums.txt
+  sha256sum -b ${HELPER_PREFIX}-* > ./checksums.txt
   sha256sum -c --strict checksums.txt
 )

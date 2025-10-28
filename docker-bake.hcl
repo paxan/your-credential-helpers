@@ -6,6 +6,17 @@ variable "GO_VERSION" {
 variable "DESTDIR" {
   default = ""
 }
+
+# Defines the credential helper prefix (required, no default)
+variable "HELPER_PREFIX" {
+  default = null
+}
+
+# Defines the credential helper label (required, no default)
+variable "HELPER_LABEL" {
+  default = null
+}
+
 function "bindir" {
   params = [defaultdir]
   result = DESTDIR != "" ? DESTDIR : "./bin/${defaultdir}"
@@ -14,6 +25,8 @@ function "bindir" {
 target "_common" {
   args = {
     GO_VERSION = GO_VERSION
+    HELPER_PREFIX = HELPER_PREFIX
+    HELPER_LABEL = HELPER_LABEL
   }
 }
 
