@@ -71,7 +71,7 @@ You can see examples of each function in the [client](https://godoc.org/github.c
 1. macoskeychain: Provides a helper to use the macOS keychain as credentials store.
 2. secretservice: Provides a helper to use the D-Bus secret service as credentials store.
 3. wincred: Provides a helper to use Windows credentials manager as store.
-4. pass: Provides a helper to use `pass` as credentials store.
+4. pass: Provides a helper to use [`pass`](https://www.passwordstore.org/) as credentials store.
 
 #### Note
 
