@@ -11,7 +11,7 @@ COVERAGEDIR ?= ./bin/coverage
 HELPER_PREFIX ?=
 HELPER_LABEL ?=
 
-# 10.11 is the minimum supported version for osxkeychain
+# 10.11 is the minimum supported version for macoskeychain
 export MACOSX_DEPLOYMENT_TARGET = 10.11
 ifeq "$(shell go env GOOS)" "darwin"
 	export CGO_CFLAGS = -Wno-atomic-alignment -mmacosx-version-min=$(MACOSX_DEPLOYMENT_TARGET)
@@ -49,12 +49,12 @@ ifeq ($(HELPER_LABEL),)
 endif
 
 .PHONY: build-%
-build-%: check-prefix # build, can be one of build-osxkeychain build-pass build-secretservice build-wincred
+build-%: check-prefix # build, can be one of build-macoskeychain build-pass build-secretservice build-wincred
 	go build -trimpath -ldflags='$(GO_LDFLAGS) -X ${GO_PKG}/credentials.Name=$(HELPER_PREFIX)-$* -X "${GO_PKG}/credentials.CredsLabel=$(HELPER_LABEL)" -X ${GO_PKG}/pass.PassFolder=$(HELPER_PREFIX)-helpers' -o "$(DESTDIR)/$(HELPER_PREFIX)-$*" ./$*/cmd/
 
 # aliases for build-* targets
-.PHONY: osxkeychain secretservice pass wincred
-osxkeychain: build-osxkeychain
+.PHONY: macoskeychain secretservice pass wincred
+macoskeychain: build-macoskeychain
 secretservice: build-secretservice
 pass: build-pass
 wincred: build-wincred

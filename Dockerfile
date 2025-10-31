@@ -98,8 +98,8 @@ RUN --mount=type=bind,target=. \
       ;;
     darwin)
       go install std
-      make build-osxkeychain build-pass PACKAGE=$PACKAGE VERSION=$(cat /tmp/.version) REVISION=$(cat /tmp/.revision) HELPER_PREFIX=$HELPER_PREFIX HELPER_LABEL="$HELPER_LABEL" DESTDIR=/out
-      xx-verify /out/${HELPER_PREFIX}-osxkeychain
+      make build-macoskeychain build-pass PACKAGE=$PACKAGE VERSION=$(cat /tmp/.version) REVISION=$(cat /tmp/.revision) HELPER_PREFIX=$HELPER_PREFIX HELPER_LABEL="$HELPER_LABEL" DESTDIR=/out
+      xx-verify /out/${HELPER_PREFIX}-macoskeychain
       xx-verify /out/${HELPER_PREFIX}-pass
       ;;
     windows)

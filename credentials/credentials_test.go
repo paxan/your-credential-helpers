@@ -236,7 +236,8 @@ func TestEraseMissingServerURL(t *testing.T) {
 
 func TestList(t *testing.T) {
 	// This tests that there is proper input an output into the byte stream
-	// Individual stores are very OS specific and have been tested in osxkeychain and secretservice respectively
+	// Individual stores are very OS specific and have been tested in
+	// macoskeychain and secretservice respectively
 	out := new(bytes.Buffer)
 	h := newMemoryStore()
 	if err := List(h, out); err != nil {

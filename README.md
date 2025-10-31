@@ -1,12 +1,7 @@
-[![GitHub release](https://img.shields.io/github/release/docker/docker-credential-helpers.svg?style=flat-square)](https://github.com/paxan/your-credential-helpers/releases/latest)
-[![PkgGoDev](https://img.shields.io/badge/go.dev-docs-007d9c?style=flat-square&logo=go&logoColor=white)](https://pkg.go.dev/github.com/paxan/your-credential-helpers)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/docker/docker-credential-helpers/build.yml?label=build&logo=github&style=flat-square)](https://github.com/paxan/your-credential-helpers/actions?query=workflow%3Abuild)
-[![Codecov](https://img.shields.io/codecov/c/github/docker/docker-credential-helpers?logo=codecov&style=flat-square)](https://codecov.io/gh/docker/docker-credential-helpers)
-[![Go Report Card](https://goreportcard.com/badge/github.com/paxan/your-credential-helpers?style=flat-square)](https://goreportcard.com/report/github.com/paxan/your-credential-helpers)
-
 ## Introduction
 
-docker-credential-helpers is a suite of programs to use native stores to keep Docker credentials safe.
+your-credential-helpers is a suite of programs to use native stores to keep
+app-specific credentials safe.
 
 ## Installation
 
@@ -17,6 +12,9 @@ Go to the [Releases](https://github.com/paxan/your-credential-helpers/releases) 
 You can build the credential helpers using Docker:
 
 ```shell
+$ export HELPER_PREFIX=myapp-credential
+$ export HELPER_LABEL="MyApp Credentials"
+
 # install emulators
 $ docker run --privileged --rm tonistiigi/binfmt --install all
 
@@ -28,7 +26,7 @@ $ docker buildx bake "https://github.com/paxan/your-credential-helpers.git"
 
 # or from local source
 $ git clone https://github.com/paxan/your-credential-helpers.git
-$ cd docker-credential-helpers
+$ cd your-credential-helpers
 $ docker buildx bake
 ```
 
@@ -38,41 +36,31 @@ Or if the toolchain is already installed on your machine:
 
 ```shell
 $ git clone https://github.com/paxan/your-credential-helpers.git
-$ cd docker-credential-helpers
+$ cd your-credential-helpers
 ```
 
 2.  Use `make` to build the program you want. That will leave an executable in the `bin` directory inside the repository.
 
 ```shell
-$ make osxkeychain
+$ make macoskeychain
 ```
 
 3.  Put that binary in your `$PATH`, so Docker can find it.
 
 ```shell
-$ cp bin/build/docker-credential-osxkeychain /usr/local/bin/
+$ cp bin/build/${HELPER_PREFIX}-macoskeychain /usr/local/bin/
 ```
 
 ## Usage
 
-### With the Docker Engine
-
-Set the `credsStore` option in your `~/.docker/config.json` file with the suffix of the program you want to use. For instance, set it to `osxkeychain` if you want to use `docker-credential-osxkeychain`.
-
-```json
-{
-  "credsStore": "osxkeychain"
-}
-```
-
-### With other command line applications
+### With command line applications
 
 The sub-package [client](https://godoc.org/github.com/paxan/your-credential-helpers/client) includes
 functions to call external programs from your own command line applications.
 
 There are three things you need to know if you need to interact with a helper:
 
-1. The name of the program to execute, for instance `docker-credential-osxkeychain`.
+1. The name of the program to execute, for instance `${HELPER_PREFIX}-macoskeychain`.
 2. The server address to identify the credentials, for instance `https://example.com`.
 3. The username and secret to store, when you want to store credentials.
 
@@ -80,14 +68,14 @@ You can see examples of each function in the [client](https://godoc.org/github.c
 
 ### Available programs
 
-1. osxkeychain: Provides a helper to use the OS X keychain as credentials store.
+1. macoskeychain: Provides a helper to use the macOS keychain as credentials store.
 2. secretservice: Provides a helper to use the D-Bus secret service as credentials store.
 3. wincred: Provides a helper to use Windows credentials manager as store.
 4. pass: Provides a helper to use `pass` as credentials store.
 
 #### Note
 
-`pass` needs to be configured for `docker-credential-pass` to work properly.
+`pass` needs to be configured for `${HELPER_PREFIX}-pass` to work properly.
 It must be initialized with a `gpg2` key ID. Make sure your GPG key exists is in `gpg2` keyring as `pass` uses `gpg2` instead of the regular `gpg`.
 
 ## Development
@@ -99,7 +87,7 @@ A credential helper can be any program that can read values from the standard in
 - `erase`: Removes credentials from the keychain. The payload in the standard input is the raw value for the `ServerURL`.
 - `list`: Lists stored credentials. There is no standard input payload.
 
-This repository also includes libraries to implement new credentials programs in Go. Adding a new helper program is pretty easy. You can see how the OS X keychain helper works in the [osxkeychain](osxkeychain) directory.
+This repository also includes libraries to implement new credentials programs in Go. Adding a new helper program is pretty easy. You can see how the macOS keychain helper works in the [macoskeychain](macoskeychain) directory.
 
 1. Implement the interface `credentials.Helper` in `YOUR_PACKAGE/`
 2. Create a main program in `YOUR_PACKAGE/cmd/`.

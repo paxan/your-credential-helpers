@@ -1,6 +1,6 @@
 //go:build darwin && cgo
 
-package osxkeychain
+package macoskeychain
 
 /*
 #cgo LDFLAGS: -framework Security -framework CoreFoundation
@@ -34,11 +34,11 @@ const (
 // ErrInteractionNotAllowed is returned if keychain password prompt can not be shown.
 var ErrInteractionNotAllowed = errors.New(`keychain cannot be accessed because the current session does not allow user interaction. The keychain may be locked; unlock it by running "security -v unlock-keychain ~/Library/Keychains/login.keychain-db" and try again`)
 
-// Osxkeychain handles secrets using the OS X Keychain as store.
-type Osxkeychain struct{}
+// MacOSKeychain handles secrets using the macOS Keychain as store.
+type MacOSKeychain struct{}
 
 // Add adds new credentials to the keychain.
-func (h Osxkeychain) Add(creds *credentials.Credentials) error {
+func (h MacOSKeychain) Add(creds *credentials.Credentials) error {
 	_ = h.Delete(creds.ServerURL) // ignore errors as existing credential may not exist.
 
 	item := keychain.NewItem()
@@ -55,7 +55,7 @@ func (h Osxkeychain) Add(creds *credentials.Credentials) error {
 	// credentials with this attribute set. This way, credentials stored with
 	// newer versions can be retrieved by older versions.
 	//
-	// [1]: https://github.com/paxan/your-credential-helpers/blob/v0.8.2/osxkeychain/osxkeychain.c#L66
+	// [1]: https://github.com/paxan/your-credential-helpers/blob/v0.8.2/macoskeychain/macoskeychain.c#L66
 	item.SetAuthenticationType("dflt")
 	if err := splitServer(creds.ServerURL, item); err != nil {
 		return err
@@ -65,7 +65,7 @@ func (h Osxkeychain) Add(creds *credentials.Credentials) error {
 }
 
 // Delete removes credentials from the keychain.
-func (h Osxkeychain) Delete(serverURL string) error {
+func (h MacOSKeychain) Delete(serverURL string) error {
 	item := keychain.NewItem()
 	item.SetSecClass(keychain.SecClassInternetPassword)
 	if err := splitServer(serverURL, item); err != nil {
@@ -85,7 +85,7 @@ func (h Osxkeychain) Delete(serverURL string) error {
 }
 
 // Get returns the username and secret to use for a given registry server URL.
-func (h Osxkeychain) Get(serverURL string) (string, string, error) {
+func (h MacOSKeychain) Get(serverURL string) (string, string, error) {
 	item := keychain.NewItem()
 	item.SetSecClass(keychain.SecClassInternetPassword)
 	item.SetMatchLimit(keychain.MatchLimitOne)
@@ -113,7 +113,7 @@ func (h Osxkeychain) Get(serverURL string) (string, string, error) {
 }
 
 // List returns the stored URLs and corresponding usernames.
-func (h Osxkeychain) List() (map[string]string, error) {
+func (h MacOSKeychain) List() (map[string]string, error) {
 	item := keychain.NewItem()
 	item.SetSecClass(keychain.SecClassInternetPassword)
 	item.SetMatchLimit(keychain.MatchLimitAll)

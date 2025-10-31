@@ -1,6 +1,6 @@
 //go:build darwin && cgo
 
-package osxkeychain
+package macoskeychain
 
 import (
 	"fmt"
@@ -9,13 +9,13 @@ import (
 	"github.com/paxan/your-credential-helpers/credentials"
 )
 
-func TestOSXKeychainHelper(t *testing.T) {
+func TestMacOSKeychainHelper(t *testing.T) {
 	creds := &credentials.Credentials{
 		ServerURL: "https://foobar.example.com:2376/v1",
 		Username:  "foobar",
 		Secret:    "foobarbaz",
 	}
-	helper := Osxkeychain{}
+	helper := MacOSKeychain{}
 	if err := helper.Add(creds); err != nil {
 		t.Fatal(err)
 	}
@@ -83,9 +83,9 @@ func TestOSXKeychainHelper(t *testing.T) {
 	}
 }
 
-// TestOSXKeychainHelperRetrieveAliases verifies that secrets can be accessed
+// TestMacOSKeychainHelperRetrieveAliases verifies that secrets can be accessed
 // through variations on the URL
-func TestOSXKeychainHelperRetrieveAliases(t *testing.T) {
+func TestMacOSKeychainHelperRetrieveAliases(t *testing.T) {
 	tests := []struct {
 		doc      string
 		storeURL string
@@ -108,7 +108,7 @@ func TestOSXKeychainHelperRetrieveAliases(t *testing.T) {
 		},
 	}
 
-	helper := Osxkeychain{}
+	helper := MacOSKeychain{}
 	t.Cleanup(func() {
 		for _, tc := range tests {
 			if err := helper.Delete(tc.storeURL); err != nil && !credentials.IsErrCredentialsNotFound(err) {
@@ -141,8 +141,8 @@ func TestOSXKeychainHelperRetrieveAliases(t *testing.T) {
 	}
 }
 
-func TestOSXKeychainHelperStoreWithUncleanPath(t *testing.T) {
-	helper := Osxkeychain{}
+func TestMacOSKeychainHelperStoreWithUncleanPath(t *testing.T) {
+	helper := MacOSKeychain{}
 	creds := &credentials.Credentials{
 		ServerURL: "https://::1:8080//////location/../../hello",
 		Username:  "testuser",
@@ -174,9 +174,9 @@ func TestOSXKeychainHelperStoreWithUncleanPath(t *testing.T) {
 	}
 }
 
-// TestOSXKeychainHelperRetrieveStrict verifies that only matching secrets are
+// TestMacOSKeychainHelperRetrieveStrict verifies that only matching secrets are
 // returned.
-func TestOSXKeychainHelperRetrieveStrict(t *testing.T) {
+func TestMacOSKeychainHelperRetrieveStrict(t *testing.T) {
 	tests := []struct {
 		doc      string
 		storeURL string
@@ -216,7 +216,7 @@ func TestOSXKeychainHelperRetrieveStrict(t *testing.T) {
 		},
 	}
 
-	helper := Osxkeychain{}
+	helper := MacOSKeychain{}
 	t.Cleanup(func() {
 		for _, tc := range tests {
 			if err := helper.Delete(tc.storeURL); err != nil && !credentials.IsErrCredentialsNotFound(err) {
@@ -249,9 +249,9 @@ func TestOSXKeychainHelperRetrieveStrict(t *testing.T) {
 	}
 }
 
-// TestOSXKeychainHelperStoreRetrieve verifies that secrets stored in the
+// TestMacOSKeychainHelperStoreRetrieve verifies that secrets stored in the
 // the keychain can be read back using the URL that was used to store them.
-func TestOSXKeychainHelperStoreRetrieve(t *testing.T) {
+func TestMacOSKeychainHelperStoreRetrieve(t *testing.T) {
 	tests := []struct {
 		url string
 	}{
@@ -265,7 +265,7 @@ func TestOSXKeychainHelperStoreRetrieve(t *testing.T) {
 		{url: "https://foobar.example.com:2376/some/other/path?foo=bar"},
 	}
 
-	helper := Osxkeychain{}
+	helper := MacOSKeychain{}
 	t.Cleanup(func() {
 		for _, tc := range tests {
 			if err := helper.Delete(tc.url); err != nil && !credentials.IsErrCredentialsNotFound(err) {
@@ -311,7 +311,7 @@ func TestOSXKeychainHelperStoreRetrieve(t *testing.T) {
 
 func TestMissingCredentials(t *testing.T) {
 	const nonExistingCred = "https://adsfasdf.invalid/asdfsdddd"
-	helper := Osxkeychain{}
+	helper := MacOSKeychain{}
 	_, _, err := helper.Get(nonExistingCred)
 	if !credentials.IsErrCredentialsNotFound(err) {
 		t.Errorf("expected ErrCredentialsNotFound, got %v", err)
